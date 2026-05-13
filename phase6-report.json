@@ -1,0 +1,196 @@
+{
+  "timestamp": "2026-05-13T04:58:36.698Z",
+  "passFail": "PASS",
+  "outcome": {
+    "sql-injection": "SAFE",
+    "path-traversal": "SAFE",
+    "authorization": "SAFE",
+    "upload-security": "SAFE",
+    "error-handling": "SAFE",
+    "api-abuse": "SAFE"
+  },
+  "tested": {
+    "sql-injection": [
+      {
+        "method": "GET",
+        "endpoint": "/movies/1",
+        "payload": "(id=1)"
+      },
+      {
+        "method": "GET",
+        "endpoint": "/movies/' OR 1=1 --",
+        "payload": "' OR 1=1 --"
+      },
+      {
+        "method": "GET",
+        "endpoint": "/movies/1;DROP TABLE movies;",
+        "payload": "1;DROP TABLE movies;"
+      },
+      {
+        "method": "GET",
+        "endpoint": "/movies/\" OR \"\"=\"\"",
+        "payload": "\" OR \"\"=\"\""
+      }
+    ],
+    "path-traversal": [
+      {
+        "method": "GET",
+        "endpoint": "/video/../../etc/passwd",
+        "payload": "../../etc/passwd"
+      },
+      {
+        "method": "GET",
+        "endpoint": "/subtitle/../../secret.env",
+        "payload": "../../secret.env"
+      },
+      {
+        "method": "GET",
+        "endpoint": "/thumbnail/..\\..\\windows\\system32",
+        "payload": "..\\..\\windows\\system32"
+      }
+    ],
+    "authorization": [
+      {
+        "method": "POST",
+        "endpoint": "/upload",
+        "payload": "empty/minimal multipart probe"
+      },
+      {
+        "method": "GET",
+        "endpoint": "/admin",
+        "payload": "unauthenticated"
+      },
+      {
+        "method": "DELETE",
+        "endpoint": "/movies/1",
+        "payload": "unauthenticated"
+      }
+    ],
+    "upload-security": [
+      {
+        "method": "POST",
+        "endpoint": "/upload",
+        "payload": "empty/minimal multipart probe"
+      }
+    ],
+    "error-handling": [
+      {
+        "method": "GET",
+        "endpoint": "/movies/9999999999",
+        "payload": "very large id"
+      },
+      {
+        "method": "GET",
+        "endpoint": "/movies/%2F%2F%2E%2E",
+        "payload": "malformed id"
+      },
+      {
+        "method": "POST",
+        "endpoint": "/upload",
+        "payload": "invalid payload / missing parts (probe)"
+      }
+    ],
+    "api-abuse": [
+      {
+        "method": "GET",
+        "endpoint": "/movies",
+        "payload": "rapid_1"
+      },
+      {
+        "method": "GET",
+        "endpoint": "/movies",
+        "payload": "rapid_2"
+      },
+      {
+        "method": "GET",
+        "endpoint": "/movies",
+        "payload": "rapid_3"
+      },
+      {
+        "method": "GET",
+        "endpoint": "/movies",
+        "payload": "rapid_4"
+      },
+      {
+        "method": "GET",
+        "endpoint": "/movies",
+        "payload": "rapid_5"
+      },
+      {
+        "method": "GET",
+        "endpoint": "/movies",
+        "payload": "rapid_6"
+      },
+      {
+        "method": "GET",
+        "endpoint": "/movies",
+        "payload": "rapid_7"
+      },
+      {
+        "method": "GET",
+        "endpoint": "/movies",
+        "payload": "rapid_8"
+      },
+      {
+        "method": "GET",
+        "endpoint": "/movies",
+        "payload": "rapid_9"
+      },
+      {
+        "method": "GET",
+        "endpoint": "/movies",
+        "payload": "rapid_10"
+      },
+      {
+        "method": "GET",
+        "endpoint": "/movies",
+        "payload": "rapid_11"
+      },
+      {
+        "method": "GET",
+        "endpoint": "/movies",
+        "payload": "rapid_12"
+      },
+      {
+        "method": "GET",
+        "endpoint": "/movies",
+        "payload": "rapid_13"
+      },
+      {
+        "method": "GET",
+        "endpoint": "/movies",
+        "payload": "rapid_14"
+      },
+      {
+        "method": "GET",
+        "endpoint": "/movies",
+        "payload": "rapid_15"
+      },
+      {
+        "method": "GET",
+        "endpoint": "/movies",
+        "payload": "rapid_16"
+      },
+      {
+        "method": "GET",
+        "endpoint": "/movies",
+        "payload": "rapid_17"
+      },
+      {
+        "method": "GET",
+        "endpoint": "/movies",
+        "payload": "rapid_18"
+      },
+      {
+        "method": "GET",
+        "endpoint": "/movies",
+        "payload": "rapid_19"
+      },
+      {
+        "method": "GET",
+        "endpoint": "/movies",
+        "payload": "rapid_20"
+      }
+    ]
+  }
+}

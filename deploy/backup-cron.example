@@ -1,0 +1,2 @@
+# Run a DB backup every day at 02:15 and keep script output in the app logs.
+15 2 * * * cd /opt/streambox && /usr/bin/node scripts/backup-db.js >> logs/backup-cron.log 2>&1

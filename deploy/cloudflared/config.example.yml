@@ -1,0 +1,18 @@
+# Cloudflare Tunnel config example (Windows-friendly)
+# Replace placeholders:
+# - <TUNNEL_UUID>
+# - credentials-file path
+# - hostname
+#
+# Ingress rules:
+# - requests for your hostname go to your local app at http://localhost:3000
+# - everything else returns 404
+
+tunnel: <TUNNEL_UUID>
+credentials-file: C:\Users\<YOU>\.cloudflared\<TUNNEL_UUID>.json
+
+ingress:
+  - hostname: streambox.example.com
+    service: http://localhost:3000
+  - service: http_status:404
+
