@@ -18,7 +18,5 @@ RUN mkdir -p /app/data /app/logs /app/backups /media/movies /media/subtitles /me
 USER node
 EXPOSE 3000
 
-VOLUME ["/app/data", "/app/logs", "/app/backups", "/media"]
-
 ENTRYPOINT ["dumb-init", "--"]
 CMD ["node", "server.js"]
