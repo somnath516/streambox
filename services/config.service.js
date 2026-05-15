@@ -32,12 +32,15 @@ const config = {
   uploadMaxFiles: Number(process.env.UPLOAD_MAX_FILES || 4),
   phase6Probe: process.env.PHASE6_PROBE === '1',
   dirs: {
-    movies: path.resolve(sdBase, 'movies'),
-    subtitles: path.resolve(sdBase, 'subtitles'),
-    thumbnails: path.resolve(sdBase, 'thumbnails'),
-    heroBanners: path.resolve(process.env.HERO_BANNER_BASE || path.join(sdBase, 'hero banner')),
+    movies: path.resolve(process.env.MOVIES_BASE || path.join(root, 'uploads', 'movies')),
+    subtitles: path.resolve(process.env.SUBTITLES_BASE || path.join(root, 'uploads', 'subtitles')),
+    thumbnails: path.resolve(process.env.THUMBNAILS_BASE || path.join(root, 'uploads', 'thumbnails')),
+    heroBanners: path.resolve(
+      process.env.HERO_BANNER_BASE ||
+        path.join(process.env.HERO_BANNER_DIR || '/media/hero banner')
+    ),
     data: path.join(root, 'data'),
-    cardBase: path.resolve(process.env.MEDIA_PATH || sdBase),
+    cardBase: path.resolve(process.env.MEDIA_PATH || path.join(root, 'uploads')),
     logos: path.join(root, 'logos'),
     public: path.join(root, 'public'),
     uploads: path.join(root, 'uploads'),

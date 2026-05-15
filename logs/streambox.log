@@ -935,3 +935,4 @@
 {"ts":"2026-05-14T13:36:25.830Z","level":"info","event":"api_request","requestId":"35483b09-d229-40b9-9d28-de21a6e58199","method":"GET","path":"/movies","status":304,"durationMs":6.45}
 {"ts":"2026-05-14T13:36:50.219Z","level":"info","event":"api_request","requestId":"3df33b00-af2f-43ba-a7eb-b8f044ad66fa","method":"GET","path":"/movies","status":304,"durationMs":12.34}
 {"ts":"2026-05-14T13:40:59.354Z","level":"info","event":"api_request","requestId":"dbb672b9-b57e-4758-b7ec-a917ced62dc1","method":"GET","path":"/movies","status":304,"durationMs":2.9}
+{"ts":"2026-05-15T12:26:03.468Z","level":"info","event":"server_ready","url":"http://localhost:3000"}
