@@ -175,33 +175,20 @@ function render(){
 
   if (!moviesEl || !trendingEl || !continueEl) return;
 
-  // IMPORTANT: Hide entries whose poster/video files don't exist.
-  // The UI currently uses SQLite rows; when media files are missing, we should not show them.
-  const moviesWithPoster = allMovies.filter(m => !!m.thumbnail);
-
   const moviesSection = moviesEl.closest('.section');
   const trendingSection = trendingEl.closest('.section');
   const continueSection = continueEl.closest('.section');
 
-  // Hide whole sections to avoid layout gaps/black space
-  if (!moviesWithPoster.length) {
-    if (moviesSection) moviesSection.classList.add('is-empty');
-    if (trendingSection) trendingSection.classList.add('is-empty');
-    if (continueSection) continueSection.classList.add('is-empty');
-    moviesEl.innerHTML = '';
-    trendingEl.innerHTML = '';
-    continueEl.innerHTML = '';
-    return;
-  }
+  // IMPORTANT: Render the sections even when thumbnails fail.
+  // Previously we hid everything when posters were missing, which produced a visually empty homepage.
+  // We keep the card-level onerror removal, but never hide the whole page pipeline.
+  const moviesWithPoster = allMovies.filter(m => !!m.thumbnail);
 
-  if (moviesSection) moviesSection.classList.remove('is-empty');
-
-  // Continue/trending are conditionally shown below
+  // Clear containers
   trendingEl.innerHTML = '';
   continueEl.innerHTML = '';
+  moviesEl.innerHTML = '';
 
-
-  // Render first pass (posters). Then verify each poster actually loads; if it fails, remove card.
   const renderRow = (rowEl, list, resumeLabel) => {
     rowEl.innerHTML = '';
     list.forEach(m => {
@@ -211,26 +198,34 @@ function render(){
       const img = card.querySelector('img');
       if (img) {
         img.onerror = () => {
-          // Remove card if thumbnail missing
+          // Remove only the broken card; keep the rest of the UI visible.
           try { card.remove(); } catch {}
         };
       }
     });
   };
 
-  renderRow(moviesEl, moviesWithPoster.slice(0,12));
+  if (moviesWithPoster.length) {
+    if (moviesSection) moviesSection.classList.remove('is-empty');
+    renderRow(moviesEl, moviesWithPoster.slice(0,12));
 
-  // Trending: show only if we have cards
-  const trendingList = moviesWithPoster.slice(5, 15);
-  if (trendingList.length) {
-    if (trendingSection) trendingSection.classList.remove('is-empty');
-    renderRow(trendingEl, trendingList);
+    const trendingList = moviesWithPoster.slice(5, 15);
+    if (trendingList.length) {
+      if (trendingSection) trendingSection.classList.remove('is-empty');
+      renderRow(trendingEl, trendingList);
+    } else {
+      if (trendingSection) trendingSection.classList.add('is-empty');
+      trendingEl.innerHTML = '';
+    }
   } else {
+    // Keep the hero + search + page layout visible.
+    if (moviesSection) moviesSection.classList.add('is-empty');
+    moviesEl.innerHTML = '';
     if (trendingSection) trendingSection.classList.add('is-empty');
     trendingEl.innerHTML = '';
   }
 
-  // Continue: only show if watch progress exists AND poster loads (same onerror behavior will remove)
+  // Continue: render if watch progress exists
   let continueCount = 0;
   allMovies.forEach(m => {
     if (!localStorage.getItem("watch_"+m.id)) return;
@@ -249,6 +244,7 @@ function render(){
     continueEl.innerHTML = '';
   }
 }
+
 
 function openPlayer(movie){
   const encodedMovie = encodeURIComponent(movie.movie);
