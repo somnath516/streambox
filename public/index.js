@@ -323,14 +323,19 @@ function liveSearch(val){
 
 
 
+
+
 // Init on DOM ready
-if (document.readyState === 'loading') {
-  document.addEventListener('DOMContentLoaded', init);
-} else {
-  init();
+if (typeof document !== 'undefined') {
+  if (document.readyState === 'loading') {
+    document.addEventListener('DOMContentLoaded', init);
+  } else {
+    init();
+  }
 }
 
 function init() {
+
   const menuBtn = document.querySelector('.menu-btn');
   if (menuBtn) menuBtn.addEventListener('click', toggleNavMenu);
 
