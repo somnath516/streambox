@@ -959,3 +959,13 @@
 {"ts":"2026-05-15T13:11:08.757Z","level":"info","event":"api_request","requestId":"4951e73c-7dd6-4760-bb41-d0388b7d76db","method":"GET","path":"/health","status":200,"durationMs":2.57}
 {"ts":"2026-05-15T13:11:08.761Z","level":"info","event":"api_request","requestId":"22166e5b-7df7-4ddb-bb54-2769f19e3f84","method":"GET","path":"/movies","status":200,"durationMs":1.76}
 {"ts":"2026-05-15T13:11:08.767Z","level":"info","event":"api_request","requestId":"1b927da5-7330-4e54-bd5b-ea99492b139f","method":"GET","path":"/video/1778440816088-ovvod3jpg-Schindlers-List1080p.mp4","status":404,"durationMs":3.45}
+{"ts":"2026-05-15T13:16:27.980Z","level":"info","event":"api_request","requestId":"44448d31-649d-45be-acfb-3a2f576de009","method":"GET","path":"/movies","status":304,"durationMs":2.78}
+{"ts":"2026-05-15T13:16:28.032Z","level":"info","event":"api_request","requestId":"8d2a61dc-36f7-4f0e-9085-be219375598c","method":"GET","path":"/thumbnail/1778441105970-f7d62qjzo-SchindlersListPoster.jpg","status":404,"durationMs":8.05}
+{"ts":"2026-05-15T13:16:28.036Z","level":"info","event":"api_request","requestId":"c7885854-c58e-491d-bd6f-c2b7ef301488","method":"GET","path":"/thumbnail/1778256760367-plhhlyalo-MartySupremePoster.jpg","status":404,"durationMs":7.38}
+{"ts":"2026-05-15T13:16:28.044Z","level":"info","event":"api_request","requestId":"21aadff8-4230-4a58-9fe6-78e016c3d33d","method":"GET","path":"/thumbnail/1778215290272-tsf9x9if9-Se7enposter.jpeg","status":404,"durationMs":3.42}
+{"ts":"2026-05-15T13:16:34.533Z","level":"info","event":"api_request","requestId":"02a922a2-6d55-4f4e-9734-a49122069952","method":"GET","path":"/movies/1777781291045","status":200,"durationMs":3.63}
+{"ts":"2026-05-15T13:16:34.543Z","level":"info","event":"api_request","requestId":"de43861d-4bdd-4ce4-96c1-56dc3a811e19","method":"GET","path":"/movies/1777781291045","status":304,"durationMs":5.72}
+{"ts":"2026-05-15T13:16:34.551Z","level":"info","event":"api_request","requestId":"52699283-40ad-407c-8f28-8d11c52b1240","method":"GET","path":"/video/1778440816088-ovvod3jpg-Schindlers-List1080p.mp4","status":404,"durationMs":4.09}
+{"ts":"2026-05-15T13:16:34.558Z","level":"info","event":"api_request","requestId":"289c52ca-de62-40dd-b84e-6486be23e483","method":"GET","path":"/subtitle/1778441106119-rjwkyyauu-Schindlers-List1080p-English.vtt","status":404,"durationMs":2.87}
+{"ts":"2026-05-15T13:16:54.606Z","level":"info","event":"server_ready","url":"http://localhost:3000"}
+{"ts":"2026-05-15T13:27:29.717Z","level":"info","event":"api_request","requestId":"b693194a-8143-4299-a645-27b7e3f55c35","method":"GET","path":"/thumbnail/1778441105970-f7d62qjzo-SchindlersListPoster.jpg","status":404,"durationMs":0.95}

@@ -35,7 +35,8 @@ const root = path.join(__dirname, '..');
  * We preserve backward compatibility by honoring SD_BASE when provided,
  * but we choose Linux-safe defaults matching the container filesystem.
  */
-const defaultLinuxBase = path.join(root, 'uploads');
+const defaultLinuxBase = '/media';
+
 
 const sdBase =
   process.env.SD_BASE ||
