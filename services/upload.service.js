@@ -15,6 +15,8 @@ function createUpload(config) {
     destination: (req, file, cb) => cb(null, config.dirs[dirKeyForField(file.fieldname)]),
     filename: (req, file, cb) => {
       const clean = String(file.originalname || 'upload').replace(/[^a-z0-9.-]/gi, '');
+      // Force filename to a safe, portable basename (no path separators leaking into DB).
+      // This prevents /thumbnail/<filename> 404 when DB rows contain Windows-style path fragments.
       cb(null, `${Date.now()}-${Math.random().toString(36).slice(2, 11)}-${clean}`);
     },
   });

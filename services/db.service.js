@@ -80,10 +80,22 @@ async function getMovies() {
 async function addMovie(movie) {
   await run('BEGIN IMMEDIATE TRANSACTION');
   try {
+    // Normalize stored media filenames to safe basenames.
+    // Prevents DB rows from containing path fragments like "C:\\..." or "uploads\\...".
+    const toBase = (v) => (v ? String(v).replace(/\\/g, '/').split('/').pop() : v);
+
     const result = await run(
       `INSERT INTO movies (title, description, movie, subtitle, thumbnail, heroBanner, category)
        VALUES (?, ?, ?, ?, ?, ?, ?)`,
-      [movie.title, movie.description, movie.movie, movie.subtitle, movie.thumbnail, movie.heroBanner || null, movie.category]
+      [
+        movie.title,
+        movie.description,
+        toBase(movie.movie),
+        toBase(movie.subtitle),
+        toBase(movie.thumbnail),
+        toBase(movie.heroBanner || null),
+        movie.category,
+      ]
     );
     await run('COMMIT');
     return { id: result.lastID, ...movie };
@@ -126,11 +138,22 @@ async function deleteMovie(id) {
 
 const UPDATE_FIELDS = new Set(['title', 'description', 'category', 'thumbnail', 'heroBanner', 'subtitle']);
 
+function toBase(v) {
+  if (!v) return v;
+  return String(v).replace(/\\/g, '/').split('/').pop();
+}
+
 async function updateMovie(id, updates) {
   const fields = Object.keys(updates).filter((field) => UPDATE_FIELDS.has(field));
   if (!fields.length) return { id, changes: 0 };
 
-  const values = fields.map((field) => updates[field]);
+  // Normalize any media filename fields to basenames.
+  const values = fields.map((field) => {
+    const v = updates[field];
+    if (field === 'thumbnail' || field === 'heroBanner' || field === 'subtitle') return toBase(v);
+    return v;
+  });
+
   values.push(id);
   const sql = `UPDATE movies SET ${fields.map((field) => `${field} = ?`).join(', ')} WHERE id = ?`;
   const result = await run(sql, values);

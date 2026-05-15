@@ -6,20 +6,62 @@ function hideLoader(){
 }
 
 function loadMovies(){
-  setTimeout(hideLoader, 2500);
-  
-  fetch("/movies")
-  .then(res=>res.json())
-  .then(data => {
-    allMovies = data;
+  // Fail-safe: render layout immediately even if fetch fails.
+  try {
+    allMovies = Array.isArray(allMovies) ? allMovies : [];
     updateHero();
     render();
-  })
-  .catch(e => {
-    console.error("Movies load failed",e);
-    updateHero('Load Error', "Check console - try refresh");
-  });
+  } catch (e) {
+    console.error('homepage_render_init_failed', e);
+  }
+
+  setTimeout(hideLoader, 2500);
+
+  fetch("/movies")
+    .then(async (res) => {
+      if (!res || !res.ok) {
+        console.error('movies_fetch_bad_response', {
+          ok: !!res?.ok,
+          status: res?.status,
+        });
+        return [];
+      }
+      try {
+        const json = await res.json();
+        return Array.isArray(json) ? json : [];
+      } catch (e) {
+        console.error('movies_fetch_json_parse_failed', e);
+        return [];
+      }
+    })
+    .then((data) => {
+      allMovies = Array.isArray(data) ? data : [];
+      console.info('movies_fetch_success', { count: allMovies.length });
+
+      // Validate shape defensively (never throw)
+      const safeMovies = allMovies.filter(m => {
+        if (!m || typeof m !== 'object') return false;
+        return m.id !== undefined && (m.title !== undefined || m.description !== undefined);
+      });
+
+      if (safeMovies.length !== allMovies.length) {
+        console.warn('movies_payload_validation_dropped_entries', {
+          dropped: allMovies.length - safeMovies.length,
+        });
+      }
+
+      allMovies = safeMovies;
+      updateHero();
+      render();
+    })
+    .catch((e) => {
+      console.error('movies_fetch_failed', e);
+      // Keep page usable
+      updateHero('Load Error', "Check console - try refresh");
+      render();
+    });
 }
+
 
 let currentHeroIndex = 0;
 
@@ -345,6 +387,10 @@ function init() {
   // Search button (first icon-btn)
   const searchBtn = document.querySelector('.nav-right .icon-btn:first-child');
   if (searchBtn) searchBtn.addEventListener('click', openSearch);
+
+  // Hero Play button (CSP-safe; removes need for inline onclick)
+  const heroPlayBtn = document.querySelector('[data-action="playFeatured"]');
+  if (heroPlayBtn) heroPlayBtn.addEventListener('click', playFeatured);
 
   // Admin button (second icon-btn)
   const adminBtn = document.querySelector('.nav-right .icon-btn:nth-child(2)');

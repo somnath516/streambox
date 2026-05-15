@@ -969,3 +969,4 @@
 {"ts":"2026-05-15T13:16:34.558Z","level":"info","event":"api_request","requestId":"289c52ca-de62-40dd-b84e-6486be23e483","method":"GET","path":"/subtitle/1778441106119-rjwkyyauu-Schindlers-List1080p-English.vtt","status":404,"durationMs":2.87}
 {"ts":"2026-05-15T13:16:54.606Z","level":"info","event":"server_ready","url":"http://localhost:3000"}
 {"ts":"2026-05-15T13:27:29.717Z","level":"info","event":"api_request","requestId":"b693194a-8143-4299-a645-27b7e3f55c35","method":"GET","path":"/thumbnail/1778441105970-f7d62qjzo-SchindlersListPoster.jpg","status":404,"durationMs":0.95}
+{"ts":"2026-05-15T15:19:45.479Z","level":"info","event":"server_ready","url":"http://localhost:3000"}
