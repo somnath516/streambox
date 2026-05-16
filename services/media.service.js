@@ -1,6 +1,8 @@
 const fs = require('fs');
 const fsp = require('fs').promises;
 const path = require('path');
+const logger = require('../utils/logger');
+
 const { pipeline } = require('stream');
 const { promisify } = require('util');
 
@@ -88,8 +90,36 @@ function parseRange(rangeHeader, size) {
 }
 
 async function streamMedia(req, res, options) {
-  const found = await findMediaFile(options.baseDirs, req.params.filename);
+  const filename = req.params.filename;
+  const safeBasename = path.basename(String(filename || ''));
+
+  // TEMP deterministic proof: log effective dirs + resolved candidates.
+  const baseDirs = (options.baseDirs || []).map((d) => path.resolve(d));
+
+  const decoded = decodeFilename(filename);
+  const clean = decoded ? path.basename(decoded) : safeBasename;
+  const candidatePaths = baseDirs.map((dir) => path.resolve(dir, clean));
+  const candidateExists = candidatePaths.map((p) => {
+    try {
+      return fs.existsSync(p);
+    } catch {
+      return false;
+    }
+  });
+
+  logger.info('[MEDIA DEBUG] thumbnailOrMediaRequest', {
+    route: req.path,
+    filename,
+    decodedFilename: decoded,
+    cleanBasename: clean,
+    effectiveBaseDirs: baseDirs,
+    resolvedCandidates: candidatePaths,
+    existsSync: candidateExists,
+  });
+
+  const found = await findMediaFile(baseDirs, filename);
   if (!found) return res.status(404).json({ error: 'Not found' });
+
 
   const { fullPath, stat } = found;
   const type = options.contentType || contentTypeFor(fullPath, options.fallbackType);

@@ -1,7 +1,10 @@
 const fs = require('fs').promises;
+const fsSync = require('fs');
 const multer = require('multer');
 const path = require('path');
+const logger = require('../utils/logger');
 const { normalizeToUtf8AndValidateVtt } = require('../utils/subtitle');
+
 
 function dirKeyForField(fieldname) {
   if (fieldname === 'movie') return 'movies';
@@ -11,14 +14,36 @@ function dirKeyForField(fieldname) {
 }
 
 function createUpload(config) {
+  const effectiveDirs = config.dirs;
+
   const storage = multer.diskStorage({
-    destination: (req, file, cb) => cb(null, config.dirs[dirKeyForField(file.fieldname)]),
+    destination: (req, file, cb) => {
+      const dirKey = dirKeyForField(file.fieldname);
+      const dest = path.resolve(effectiveDirs[dirKey]);
+      // TEMP deterministic proof: upload destination resolved inside container.
+      logger.info('[MEDIA DEBUG] uploadDestination', {
+        fieldname: file.fieldname,
+        originalname: file.originalname,
+        dest,
+        existsSync: fsSync.existsSync(dest),
+        effectiveDirs,
+      });
+      cb(null, dest);
+    },
+
     filename: (req, file, cb) => {
       const clean = String(file.originalname || 'upload').replace(/[^a-z0-9.-]/gi, '');
       // Force filename to a safe, portable basename (no path separators leaking into DB).
       // This prevents /thumbnail/<filename> 404 when DB rows contain Windows-style path fragments.
-      cb(null, `${Date.now()}-${Math.random().toString(36).slice(2, 11)}-${clean}`);
+      const finalName = `${Date.now()}-${Math.random().toString(36).slice(2, 11)}-${clean}`;
+      logger.info('[MEDIA DEBUG] uploadFilename', {
+        fieldname: file.fieldname,
+        originalname: file.originalname,
+        finalName,
+      });
+      cb(null, finalName);
     },
+
   });
 
   return multer({
