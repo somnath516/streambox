@@ -17,11 +17,7 @@ function createSecurityHeaders() {
         mediaSrc: ["'self'", 'blob:'],
         objectSrc: ["'none'"],
         scriptSrc: ["'self'", "'unsafe-inline'"],
-        scriptSrcAttr: ["'self'", "'unsafe-inline'"],
         styleSrc: ["'self'", "'unsafe-inline'"],
-        // Allow inline event handlers for legacy admin templates while keeping CSP otherwise strict.
-        // This avoids Render console "script-src-attr 'none'" blocks.
-        // Frontend JS should still migrate to addEventListener, but runtime will not break.
         upgradeInsecureRequests: null,
       },
     } : false,

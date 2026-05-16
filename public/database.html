@@ -385,7 +385,7 @@ body {
     <div style="width:min(980px,100%);background:rgba(15,15,15,.96);border:1px solid var(--soft-border);border-radius:18px;padding:18px;">
       <div style="display:flex;align-items:center;justify-content:space-between;gap:12px;margin-bottom:14px;">
         <div style="color:var(--netflix-red);font-weight:900;">Edit Movie</div>
-        <button class="action-icon" onclick="closeEditor()" title="Close" style="border-color:rgba(255,255,255,.12);">✕</button>
+        <button class="action-icon" data-action="closeEditor" title="Close" style="border-color:rgba(255,255,255,.12);" type="button">✕</button>
       </div>
 
       <div style="display:grid;grid-template-columns: 1fr 1fr;gap:14px;">
@@ -422,8 +422,8 @@ body {
       </div>
 
       <div style="display:flex;justify-content:flex-end;gap:12px;margin-top:14px;">
-        <button class="action-icon" onclick="closeEditor()" style="border-color:rgba(255,255,255,.12);">Cancel</button>
-        <button class="action-icon" onclick="saveEditor()" style="border-color:rgba(229,9,20,.45);background:rgba(229,9,20,.14);">Save</button>
+        <button class="action-icon" data-action="closeEditor" style="border-color:rgba(255,255,255,.12);" type="button">Cancel</button>
+        <button class="action-icon" data-action="saveEditor" style="border-color:rgba(229,9,20,.45);background:rgba(229,9,20,.14);" type="button">Save</button>
       </div>
     </div>
   </div>
@@ -492,6 +492,42 @@ function authHeaders() {
 }
 
 // SIDEBAR
+
+// Delegate clicks for CSP-safe admin actions
+function setupAdminDelegation() {
+  document.addEventListener('click', (e) => {
+    const btn = e.target && e.target.closest && e.target.closest('[data-action]');
+    if (!btn) return;
+
+    const action = btn.getAttribute('data-action');
+    const id = btn.getAttribute('data-id');
+
+    if (action === 'openEditor') {
+      if (id) openEditor(id);
+      return;
+    }
+
+    if (action === 'deleteMovie') {
+      if (id) deleteMovie(id);
+      return;
+    }
+
+    if (action === 'closeEditor') {
+      closeEditor();
+      return;
+    }
+
+    if (action === 'saveEditor') {
+      saveEditor();
+      return;
+    }
+
+    if (action === 'loadDatabase') {
+      loadDatabase();
+      return;
+    }
+  });
+}
 const hamburger = document.getElementById('hamburger');
 const sidebar = document.getElementById('sidebar');
 const main = document.getElementById('main');
@@ -506,7 +542,7 @@ if (hamburger && sidebar && main) {
     hamburger.setAttribute('aria-label', open ? 'Close navigation' : 'Open navigation');
   };
 
-  hamburger.onclick = () => setSidebar(!sidebar.classList.contains('open'));
+  hamburger.addEventListener('click', () => setSidebar(!sidebar.classList.contains('open')));
   navScrim?.addEventListener('click', () => setSidebar(false));
   document.addEventListener('keydown', (e) => {
     if (e.key === 'Escape') setSidebar(false);
@@ -540,13 +576,14 @@ function render() {
       <td>${m.description || "-"}</td>
       <td>${m.category || "Movie"}</td>
       <td>
-        <button class="action-icon edit-btn" title="Edit" onclick="openEditor(${m.id})">
+        <button class="action-icon edit-btn" title="Edit" data-action="openEditor" data-id="${m.id}">
+
           <svg width="18" height="18" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
             <path d="M12 20h9" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/>
             <path d="M16.5 3.5a2.1 2.1 0 0 1 3 3L8 18l-4 1 1-4 11.5-11.5z" stroke="currentColor" stroke-width="1.8" stroke-linejoin="round"/>
           </svg>
         </button>
-        <button class="action-icon delete-btn" title="Delete" onclick="deleteMovie(${m.id})">
+        <button class="action-icon delete-btn" title="Delete" data-action="deleteMovie" data-id="${m.id}">
           <svg width="18" height="18" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
             <path d="M3 6h18" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/>
             <path d="M8 6V4h8v2" stroke="currentColor" stroke-width="1.8" stroke-linejoin="round"/>
