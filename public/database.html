@@ -745,8 +745,20 @@ async function saveEditor() {
 
 
 // INIT
+// Admin click delegation must be attached after DOM exists.
+setupAdminDelegation();
+
+window.onerror = function (msg, url, line, col, err) {
+  console.error('[ADMIN JS ERROR]', { msg, url, line, col, stack: err && err.stack });
+};
+window.onunhandledrejection = function (event) {
+  console.error('[ADMIN JS UNHANDLED REJECTION]', { reason: event && event.reason });
+};
+
+// Keep original behavior
 window.onload = loadDatabase;
 </script>
 
 </body>
 </html>
+

@@ -137,15 +137,100 @@ async function gracefulShutdown(reason) {
 
 const ready = Promise.resolve(createApp());
 
+function logBootSummary() {
+  logger.info('[BOOT]', {
+    pid: process.pid,
+    node_version: process.version,
+    platform: process.platform,
+    port: config.port,
+    cwd: process.cwd(),
+  });
+}
+
 if (require.main === module) {
+  // Required: deterministic boot logs at process start.
+  logger.info('[BOOT] process_start', {
+    pid: process.pid,
+    node_version: process.version,
+    platform: process.platform,
+    port: config.port,
+    cwd: process.cwd(),
+    module_main: require.main && require.main.filename ? require.main.filename : undefined,
+  });
+  logBootSummary();
+
+  process.on('uncaughtException', async (err) => {
+    logger.error('[UNCAUGHT] uncaughtException', { message: err && err.message ? err.message : String(err), stack: err && err.stack });
+    await gracefulShutdown('uncaughtException');
+    // Never silently exit.
+    process.exit(1);
+  });
+
+  process.on('unhandledRejection', async (reason) => {
+    const message = reason && reason.message ? reason.message : String(reason);
+    logger.error('[UNHANDLED REJECTION] unhandledRejection', { message, stack: reason && reason.stack });
+    await gracefulShutdown('unhandledRejection');
+    process.exit(1);
+  });
+
   ready
-    .then(() => {
-      server = app.listen(config.port, '0.0.0.0', () => {
+    .then(async () => {
+      // DB init should already be triggered inside createApp(), but we wrap it deterministically
+      // to catch and classify failures.
+      logger.info('[DB INIT START]', { port: config.port });
+      try {
+        // createApp schedules db.initDb via `startup`; if it already completed, this is still safe.
+        // We call db.initDb() explicitly again to guarantee visibility in logs if it previously failed.
+        await db.initDb();
+        logger.info('[DB INIT SUCCESS]', { port: config.port });
+      } catch (err) {
+        logger.error('[DB INIT FAILURE]', { message: err && err.message ? err.message : String(err), stack: err && err.stack });
+        throw err;
+      }
+
+      logger.info('[SERVER START]', { host: '0.0.0.0', port: config.port });
+      try {
+        server = app.listen(config.port, '0.0.0.0');
+
+        // Required: server error instrumentation.
+        server.on('error', (err) => {
+          const code = err && err.code ? err.code : undefined;
+          let classification = 'SERVER_ERROR';
+          if (code === 'EADDRINUSE') classification = 'EADDRINUSE';
+          else if (code === 'EACCES') classification = 'EACCES';
+          else if (code === 'ENOENT') classification = 'ENOENT';
+
+          logger.error('[SERVER ERROR]', {
+            classification,
+            code,
+            message: err && err.message ? err.message : String(err),
+            stack: err && err.stack,
+            port: config.port,
+          });
+        });
+
+        server.on('listening', () => {
+          const addr = server.address && server.address();
+          logger.info('[SERVER LISTENING VERIFIED]', {
+            host: '0.0.0.0',
+            port: config.port,
+            address: addr,
+            url: `http://0.0.0.0:${config.port}`,
+            local_url: `http://127.0.0.1:${config.port}`,
+          });
+        });
+
+        // Keep existing semantics/loggers (do not remove current logger line).
         logger.info('server_ready', { url: `http://localhost:${config.port}` });
-      });
+      } catch (err) {
+        // Required: wrap app.listen in try/catch to avoid silent failures.
+        logger.error('[SERVER START FAILURE]', { message: err && err.message ? err.message : String(err), stack: err && err.stack });
+        throw err;
+      }
     })
     .catch((err) => {
-      logger.error('startup_failed', { message: err.message });
+      logger.error('[BOOT FAILURE] startup_failed', { message: err && err.message ? err.message : String(err), stack: err && err.stack });
+      // Never silently exit.
       process.exit(1);
     });
 
@@ -157,18 +242,8 @@ if (require.main === module) {
     await gracefulShutdown('SIGTERM');
     process.exit(0);
   });
-  process.on('uncaughtException', async (err) => {
-    logger.error('uncaught_exception', { message: err.message });
-    await gracefulShutdown('uncaughtException');
-    process.exit(1);
-  });
-  process.on('unhandledRejection', async (reason) => {
-    const message = reason && reason.message ? reason.message : String(reason);
-    logger.error('unhandled_rejection', { message });
-    await gracefulShutdown('unhandledRejection');
-    process.exit(1);
-  });
 }
+
 
 module.exports = app;
 module.exports.createApp = createApp;
