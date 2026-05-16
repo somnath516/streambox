@@ -630,14 +630,23 @@ function openEditor(id) {
   document.getElementById('editorDescription').value = movie.description || '';
   document.getElementById('editorCategory').value = movie.category || 'Movie';
 
-  // previews
+  // previews (must never affect edit/delete availability)
   const thumbImg = document.getElementById('previewThumbnail');
   const heroImg = document.getElementById('previewHeroBanner');
   const subName = document.getElementById('previewSubtitleName');
 
-  thumbImg.src = movie.thumbnail ? ('/thumbnail/' + movie.thumbnail) : transparentPixel;
-  heroImg.src = movie.heroBanner ? ('/hero-banner/' + movie.heroBanner) : transparentPixel;
-  subName.textContent = movie.subtitle || '—';
+  // Always set placeholders first; then attempt to load media URLs only if present.
+  // Missing/broken media must not throw or block modal open.
+  if (thumbImg) {
+    thumbImg.src = transparentPixel;
+    if (movie.thumbnail) thumbImg.src = '/thumbnail/' + movie.thumbnail;
+  }
+  if (heroImg) {
+    heroImg.src = transparentPixel;
+    if (movie.heroBanner) heroImg.src = '/hero-banner/' + movie.heroBanner;
+  }
+  if (subName) subName.textContent = movie.subtitle || '—';
+
 
   // clear inputs
   document.getElementById('thumbnailFile').value = '';

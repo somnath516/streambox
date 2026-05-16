@@ -1016,3 +1016,5 @@
 {"ts":"2026-05-16T06:22:44.804Z","level":"info","event":"[MEDIA CLEANUP] done","mode":"apply","deletedFiles":0,"orphanedCount":0,"candidatesCount":0,"referencedButMissingCount":12,"cleanedRows":3,"cleanedFieldsCount":9,"completion":"success"}
 {"ts":"2026-05-16T06:26:01.466Z","level":"info","event":"[MEDIA CLEANUP] start","safeMode":true,"mediaRoots":["C:\\media\\movies","C:\\media\\subtitles","C:\\media\\thumbnails","C:\\media\\hero banner","C:\\Stream Box\\uploads"],"moviesRowCount":3,"referencedFileCount":3,"candidatesCount":0,"orphanedCount":0}
 {"ts":"2026-05-16T06:26:01.476Z","level":"info","event":"[MEDIA CLEANUP] done","mode":"apply","deletedFiles":0,"orphanedCount":0,"candidatesCount":0,"referencedButMissingCount":3,"cleanedRows":0,"cleanedFieldsCount":0,"completion":"success"}
+{"ts":"2026-05-16T06:26:33.243Z","level":"info","event":"server_ready","url":"http://localhost:3000"}
+{"ts":"2026-05-16T06:33:43.858Z","level":"warn","event":"shutdown_started","reason":"SIGINT"}
