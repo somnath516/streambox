@@ -1008,3 +1008,11 @@
 {"ts":"2026-05-16T06:08:24.885Z","level":"info","event":"api_request","requestId":"69461849-f778-4150-851b-71fe257c8483","method":"POST","path":"/upload","status":400,"durationMs":6.93}
 {"ts":"2026-05-16T06:08:24.896Z","level":"info","event":"api_request","requestId":"e6a3ce6a-844d-403f-9a9a-4f83e1f8a5e1","method":"GET","path":"/health","status":200,"durationMs":1.49}
 {"ts":"2026-05-16T06:10:14.971Z","level":"info","event":"server_ready","url":"http://localhost:3000"}
+{"ts":"2026-05-16T06:13:24.496Z","level":"info","event":"api_request","requestId":"58439381-a55c-47cc-a4af-ef0ff4c050ee","method":"GET","path":"/movies","status":200,"durationMs":25.48}
+{"ts":"2026-05-16T06:13:24.541Z","level":"info","event":"api_request","requestId":"08df0765-8f55-4723-91c3-2768c3415edc","method":"POST","path":"/upload","status":401,"durationMs":3.06}
+{"ts":"2026-05-16T06:13:24.566Z","level":"info","event":"api_request","requestId":"7d23d859-c2a4-468c-b3c0-e559d1834655","method":"POST","path":"/upload","status":400,"durationMs":8.85}
+{"ts":"2026-05-16T06:13:24.582Z","level":"info","event":"api_request","requestId":"afb228fa-d368-4dae-b183-a7039575efab","method":"GET","path":"/health","status":200,"durationMs":1.86}
+{"ts":"2026-05-16T06:22:44.772Z","level":"info","event":"[MEDIA CLEANUP] start","safeMode":true,"mediaRoots":["C:\\media\\movies","C:\\media\\subtitles","C:\\media\\thumbnails","C:\\media\\hero banner","C:\\Stream Box\\uploads"],"moviesRowCount":3,"referencedFileCount":12,"candidatesCount":0,"orphanedCount":0}
+{"ts":"2026-05-16T06:22:44.804Z","level":"info","event":"[MEDIA CLEANUP] done","mode":"apply","deletedFiles":0,"orphanedCount":0,"candidatesCount":0,"referencedButMissingCount":12,"cleanedRows":3,"cleanedFieldsCount":9,"completion":"success"}
+{"ts":"2026-05-16T06:26:01.466Z","level":"info","event":"[MEDIA CLEANUP] start","safeMode":true,"mediaRoots":["C:\\media\\movies","C:\\media\\subtitles","C:\\media\\thumbnails","C:\\media\\hero banner","C:\\Stream Box\\uploads"],"moviesRowCount":3,"referencedFileCount":3,"candidatesCount":0,"orphanedCount":0}
+{"ts":"2026-05-16T06:26:01.476Z","level":"info","event":"[MEDIA CLEANUP] done","mode":"apply","deletedFiles":0,"orphanedCount":0,"candidatesCount":0,"referencedButMissingCount":3,"cleanedRows":0,"cleanedFieldsCount":0,"completion":"success"}
