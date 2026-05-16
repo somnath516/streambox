@@ -751,9 +751,29 @@ uploadBtn.onclick = () => {
 
   xhr.onerror = () => {
     if (finished) return;
-    finalize(false, 'Network error. Check your connection.');
+
+    const status = xhr.status;
+    const responseText = xhr.responseText;
+
+    let parsed = null;
+    try {
+      parsed = responseText ? JSON.parse(responseText) : null;
+    } catch {}
+
+    const msg = (parsed && parsed.error)
+      ? parsed.error
+      : (status && status !== 0 ? `Upload failed (HTTP ${status})` : 'Upload failed. Check console for details.');
+
+    console.error('[UPLOAD ERROR]', {
+      status,
+      responseText: typeof responseText === 'string' ? responseText.slice(0, 2000) : responseText,
+      parsed,
+    });
+
+    finalize(false, msg, { parsed });
     safeReleaseWakeLock();
   };
+
 
   // Wake Lock (prevent screen sleep) - graceful fallback
   let wakeLock = null;

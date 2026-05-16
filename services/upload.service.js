@@ -3,6 +3,7 @@ const fsSync = require('fs');
 const multer = require('multer');
 const path = require('path');
 const logger = require('../utils/logger');
+
 const { normalizeToUtf8AndValidateVtt } = require('../utils/subtitle');
 
 
@@ -61,6 +62,20 @@ function createUpload(config) {
     },
   });
 }
+
+function heapSnapshot() {
+  const mem = process.memoryUsage();
+  return {
+    heapUsed: mem.heapUsed,
+    heapTotal: mem.heapTotal,
+    rss: mem.rss,
+    external: mem.external,
+    arrayBuffers: mem.arrayBuffers,
+  };
+}
+
+module.exports.heapSnapshot = heapSnapshot;
+
 
 function flattenUploadedFiles(req) {
   return Object.values(req.files || {}).flat();
