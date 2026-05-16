@@ -1019,3 +1019,7 @@
 {"ts":"2026-05-16T06:26:33.243Z","level":"info","event":"server_ready","url":"http://localhost:3000"}
 {"ts":"2026-05-16T06:33:43.858Z","level":"warn","event":"shutdown_started","reason":"SIGINT"}
 {"ts":"2026-05-16T06:35:06.715Z","level":"info","event":"server_ready","url":"http://localhost:3000"}
+{"ts":"2026-05-16T07:51:18.522Z","level":"info","event":"api_request","requestId":"cb49f56c-04f8-4997-a236-3ab82db589f6","method":"GET","path":"/movies","status":200,"durationMs":778.5}
+{"ts":"2026-05-16T07:51:18.591Z","level":"info","event":"api_request","requestId":"1345a534-d635-48f6-8297-4bf159b344c7","method":"POST","path":"/upload","status":401,"durationMs":5.37}
+{"ts":"2026-05-16T07:51:18.655Z","level":"info","event":"api_request","requestId":"c63f4990-3555-443c-a8ac-de2d42641657","method":"POST","path":"/upload","status":400,"durationMs":16.59}
+{"ts":"2026-05-16T07:51:18.672Z","level":"info","event":"api_request","requestId":"f758d6e2-d2d6-49d6-a004-eee7e41e7a1d","method":"GET","path":"/health","status":200,"durationMs":2.91}

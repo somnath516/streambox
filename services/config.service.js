@@ -36,24 +36,27 @@ const root = path.join(__dirname, '..');
  * but we choose Linux-safe defaults matching the container filesystem.
  */
 const defaultLinuxBase = '/media';
+const defaultWindowsBase = 'E:\\StreamBox Database';
 
-// Render runs on Linux. Never default to Windows-only paths when resolving runtime media.
-// If SD_BASE is explicitly provided, we still keep it Linux-safe by mapping /app/media -> /media.
-const sdBase = process.env.SD_BASE || defaultLinuxBase;
+// Render runs on Linux. For local dev, default to the provided Windows SD-card root.
+// SD_BASE (if provided) still wins, but we normalize known legacy /app/media → /media.
+const sdBase = process.env.SD_BASE || (process.platform === 'win32' ? defaultWindowsBase : defaultLinuxBase);
 
 function normalizeMediaBase(input) {
   const v = path.resolve(String(input || '')).replace(/\\/g, '/');
+
   // If someone previously set SD_BASE to /app/media in prod, normalize to /media.
   if (v === '/app/media' || v.startsWith('/app/media/')) {
     return v.replace(/^\/app\/media/, '/media');
   }
+
   return v;
 }
 
-const linuxMediaRoot = normalizeMediaBase(defaultLinuxBase);
-
+const mediaRoot = normalizeMediaBase(sdBase);
 
 const config = {
+
   port: Number(process.env.PORT || 3000),
   adminToken: process.env.STREAMBOX_ADMIN || 'STREAMBOX_ADMIN',
   uploadFileSize: Number(process.env.UPLOAD_FILE_SIZE || 500 * 1024 * 1024),
@@ -61,18 +64,18 @@ const config = {
   phase6Probe: process.env.PHASE6_PROBE === '1',
   dirs: {
     movies: path.resolve(
-      process.env.MOVIES_BASE || path.join(linuxMediaRoot, 'movies')
+      process.env.MOVIES_BASE || path.join(mediaRoot, 'movies')
     ),
     subtitles: path.resolve(
-      process.env.SUBTITLES_BASE || path.join(linuxMediaRoot, 'subtitles')
+      process.env.SUBTITLES_BASE || path.join(mediaRoot, 'subtitles')
     ),
     thumbnails: path.resolve(
-      process.env.THUMBNAILS_BASE || path.join(linuxMediaRoot, 'thumbnails')
+      process.env.THUMBNAILS_BASE || path.join(mediaRoot, 'thumbnails')
     ),
 
     // Preserve the required “hero banner” directory naming.
     heroBanners: path.resolve(
-      process.env.HERO_BANNER_BASE || path.join(linuxMediaRoot, 'hero banner')
+      process.env.HERO_BANNER_BASE || path.join(mediaRoot, 'hero banner')
     ),
 
 
@@ -83,7 +86,7 @@ const config = {
     cardBase: path.resolve(
       process.env.MEDIA_PATH
         ? String(process.env.MEDIA_PATH).replace(/\\/g, '/')
-        : linuxMediaRoot
+        : mediaRoot
     ),
 
 
